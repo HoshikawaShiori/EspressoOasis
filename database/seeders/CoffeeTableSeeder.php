@@ -32,6 +32,15 @@ class CoffeeTableSeeder extends Seeder
                     ['label' => 'L', 'price' => 140.00],
                 ],
             ],
+            [
+                'imagePath' => 'src/images/capuccino.jpg',
+                'title' => 'Cappuccino',
+                'sizes' => [
+                    ['label' => 'S', 'price' => 80.00],
+                    ['label' => 'M', 'price' => 100.00],
+                    ['label' => 'L', 'price' => 120.00],
+                ],
+            ],
         ];
         
         foreach ($data as $row) {

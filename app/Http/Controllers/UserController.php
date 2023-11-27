@@ -25,26 +25,37 @@ class UserController extends Controller
         'username' => $request->input('username'),
         'password'=> bcrypt($request->input('password')),
     ]);
-
     $user-> save();
+    $user->assignRole('user');
     Auth::login($user);
+
     return redirect()->route('coffee.shop')->with('success','');
    }
 
    public function getSignin(){
     return view('user.signin');
    }
-   public function postSignin(Request $request){
-    $this->validate($request, [
-    'email'=> 'email|required',
-    'password'=> 'required|min:4']);
-
-    if( Auth::attempt(['email'=> $request->input('email'),
-    'password'=> $request->input('password')])){
-        return redirect()->route('coffee.shop')->with('success','');
-    }
-        return redirect()->back();
+   public function postSignin(Request $request)
+   {
+       $this->validate($request, [
+           'email' => 'email|required',
+           'password' => 'required|min:4'
+       ]);
+   
+       if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
+           $user = Auth::user();
+   
+           if (!$user->hasUserRole()) {
+               return redirect()->route('dashboard')->with('success', 'Logged in successfully!');
+           } else {
+               Auth::logout();
+               return redirect()->back()->with('error', 'Invalid Account');
+           }
+       }
+   
+       return redirect()->back()->with('error', 'Invalid credentials');
    }
+   
 
    public function redirectToGoogle()
    {
@@ -61,7 +72,13 @@ public function handleGoogleCallback()
         $existingUser = User::where('email', $user->getEmail())->first();
 
         if ($existingUser) {
-            Auth::login($existingUser);
+            if ($existingUser->hasUserRole()) {
+                Auth::login($existingUser);
+            } else {
+                Auth::logout();
+                return redirect()->back()->with('error', 'Invalid Account');
+            }
+            
         } else {
             // Create a new user record in the database
             $newUser = User::create([
@@ -69,7 +86,7 @@ public function handleGoogleCallback()
                 'username' => $this->generateUniqueUsername($user->getName()), // Generate a unique username
                 'password' => bcrypt(Str::random(12)), // Generate a random password
             ]);
-
+            $newUser->assignRole('user');
             Auth::login($newUser);
         }
 
@@ -94,7 +111,7 @@ protected function generateUniqueUsername($name)
         $order->cart=unserialize($order->cart);
         return $order;
     });
-    return view('user.shop',['orders'=> $orders]);
+    return view('user.profile',['orders'=> $orders]);
 }
     public function getLogout(){
         Auth::logout();

@@ -3,69 +3,57 @@
     Signin
 @endsection
 @section('content')
+<section class="vh-100">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6 text-black">
+  
+          <div class="d-flex align-items-center justify-content-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+  
+            <form style="width: 23rem;" action="{{ route('user.signin') }}" method="POST">
+  
+              <h3 class="fw-normal mb-3 pb-3 text-center" style="letter-spacing: 1px;">Log in</h3>
+              <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign in</p>
+              @if(session('error'))
+              <div class="alert alert-danger">
+                  {{ session('error') }}
+              </div>
+          @endif
+  
+              <div class="form-outline mb-4">
+                <input type="email" id="form2Example18" name="email" class="form-control form-control-lg" />
+                <label class="form-label" for="form2Example18">Email address</label>
+              </div>
+  
+              <div class="form-outline mb-4">
+                <input type="password" id="form2Example28" name="password" class="form-control form-control-lg" />
+                <label class="form-label" for="form2Example28">Password</label>
+              </div>
+  
+              <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+              </div>
 
-    <div class="container">
-        <div class="row d-flex justify-content-center align-items-center">
-            <div class="col-lg-12 col-xl-11">
-                <div class="card text-black" style="border-radius: 25px;">
-                    <div class="card-body p-md-5">
-                        <div class="row justify-content-center">
-                            <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                                    class="img-fluid" alt="Sample image">
-
-                            </div>
-                            <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign in</p>
-                                @if (count($errors) > 0)
-                                    <div class="alert alert-danger">
-                                        @foreach ($errors->all() as $error)
-                                            <p>{{ $error }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
-                                <form class="mx-1 mx-md-4" action="{{ route('user.signin') }}" method="POST">
-
-                                    <div class="d-flex flex-row align-items-center mb-4">
-                                        <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                                        <div class="form-outline flex-fill mb-0">
-                                            <input type="email" id="email" class="form-control" name="email" />
-                                            <label class="form-label" for="email">Your Email</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-row align-items-center mb-4">
-                                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                                        <div class="form-outline flex-fill mb-0">
-                                            <input type="password" id="password" class="form-control" name="password" />
-                                            <label class="form-label" for="password">Password</label>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                        <a class="link" href="{{ route('user.signup') }}">Don't have an account
-                                            yet? Sign up now!</a>
-                                    </div>
-                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                        <button type="submit" class="btn btn-primary btn-lg">Login</button>
-                                        
-                                    </div>
-                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                        <a href="{{ route('login.google') }}" class="btn btn-danger btn-md btn-block"  href="#!"
-                                        role="button">
-                                        Continue with <i class="fab fa-google me-2"></span></i></a>
-                                    </div>
-                                    {{ csrf_field() }}
-                                </form>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                <a href="{{ route('login.google') }}" class="btn btn-danger btn-md btn-block"
+                role="button">
+                Continue with <i class="fab fa-google me-2"></span></i></a>
             </div>
+
+              <p>Don't have an account? <a href="{{ route('user.signup') }}" class="link-info">Register here</a></p>
+
+              {{ csrf_field() }}
+  
+            </form>
+  
+          </div>
+  
         </div>
+        <div class="col-sm-6 px-0 d-none d-sm-block">
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img3.webp"
+            alt="Login image" class="w-100 vh-100" style="object-fit: cover; object-position: left;">
+        </div>
+      </div>
     </div>
-    </section>
+  </section>
 @endsection

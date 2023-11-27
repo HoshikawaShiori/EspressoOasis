@@ -14,7 +14,8 @@ use Auth;
 class CoffeeController extends Controller
 {
     public function getIndex(){
-        return view('landing.index');
+        $coffees = Coffee::all();
+        return view('landing.index', ['coffees'=> $coffees]);
 
     }
     public function getShop(){

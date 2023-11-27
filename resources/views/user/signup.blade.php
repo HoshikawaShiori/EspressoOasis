@@ -3,7 +3,6 @@
     Register
 @endsection
 @section('content')
-
     <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-lg-12 col-xl-11">
@@ -13,11 +12,9 @@
                             <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
                                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
-                                @if (count($errors) > 0)
+                                @if (session('error'))
                                     <div class="alert alert-danger">
-                                        @foreach ($errors->all() as $error)
-                                            <p>{{ $error }}</p>
-                                        @endforeach
+                                        {{ session('error') }}
                                     </div>
                                 @endif
                                 <form class="mx-1 mx-md-4" action="{{ route('user.signup') }}" method="POST">

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-white">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: transparent;" id="navbar">
     <div class="container">
         <a class="navbar-brand" href="{{ route('coffee.index') }}"><img src="{{ asset('src/images/logo2.png') }}" alt="navbar layout"
                 class="img-fluid" width="200" height="200"/></a>
@@ -53,3 +53,19 @@
         </div>
     </div>
 </nav>
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+
+        $(window).scroll(function() {
+            var navbar = $("#navbar");
+            if ($(window).scrollTop() > 50) {
+                navbar.removeClass("navbar-transparent").addClass("bg-light");
+            } else {
+                navbar.removeClass("bg-light").addClass("navbar-transparent");
+            }
+        });
+    });
+</script>
+@endsection
