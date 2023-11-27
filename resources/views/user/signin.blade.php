@@ -4,8 +4,8 @@
 @endsection
 @section('content')
 
-    <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="container">
+        <div class="row d-flex justify-content-center align-items-center">
             <div class="col-lg-12 col-xl-11">
                 <div class="card text-black" style="border-radius: 25px;">
                     <div class="card-body p-md-5">
@@ -49,6 +49,12 @@
                                     </div>
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                        
+                                    </div>
+                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                        <a href="{{ route('login.google') }}" class="btn btn-danger btn-md btn-block"  href="#!"
+                                        role="button">
+                                        Continue with <i class="fab fa-google me-2"></span></i></a>
                                     </div>
                                     {{ csrf_field() }}
                                 </form>

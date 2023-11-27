@@ -14,8 +14,9 @@ use App\Http\Controllers\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/shop', [CoffeeController::class, 'getIndex'])->name('coffee.shop');
+    Route::get('/', [CoffeeController::class, 'getIndex'])->name('coffee.index');
+    Route::get('/shop', [CoffeeController::class, 'getShop'])->name('coffee.shop');
+    Route::get('login/google/callback',[UserController::class, 'handleGoogleCallback'])->name('google.callback');
 
 Route::group(['prefix'=> 'user'], function () {
     Route::group(['middleware'=> 'guest'], function () {
@@ -23,17 +24,23 @@ Route::group(['prefix'=> 'user'], function () {
         Route::post('/signup', [UserController::class, 'postSignup'])->name('user.signup');
         Route::get('/signin', [UserController::class, 'getSignin'])->name('user.signin');
         Route::post('/signin', [UserController::class, 'postSignin'])->name('user.signin');
+
+        Route::get('login/google', [UserController::class, 'redirectToGoogle'])->name('login.google');
+        Route::get('login/google/callback',[UserController::class, 'handleGoogleCallback'])->name('google.callback');
     });
-    Route::group(['middleware'=> 'auth'], function () {
+        Route::group(['middleware'=> 'auth'], function () {
         Route::get('/profile', [UserController::class, 'getProfile'])->name('user.profile');
         Route::get('/logout', [UserController::class,'getLogout'])->name('user.logout');
 
         Route::get('/cart', [CoffeeController::class, 'getCart'])->name('coffee.cart');
-        Route::get('/addToCart/{id}', [CoffeeController::class, 'getAddToCart'])->name('coffee.addToCart');
-        Route::get('/reduce/{id}', [CoffeeController::class, 'getReduce'])->name('coffee.reduce');
-        Route::get('/increase/{id}', [CoffeeController::class, 'getIncrease'])->name('coffee.increase');
-        Route::get('/remove/{id}', [CoffeeController::class, 'getRemove'])->name('coffee.remove');
+        Route::get('/addToCart/{id}/{sizeIndex}/{brew}', [CoffeeController::class, 'getAddToCart'])->name('coffee.addToCart');
+        Route::get('/reduce/{combinedKey}', [CoffeeController::class, 'getReduce'])->name('coffee.reduce');
+        Route::get('/increase/{combinedKey}', [CoffeeController::class, 'getIncrease'])->name('coffee.increase');
+        Route::get('/remove/{combinedKey}', [CoffeeController::class, 'getRemove'])->name('coffee.remove');
+        Route::get('/checkoutForm', [CoffeeController::class, 'getcheckOutForm'])->name('coffee.checkoutForm');
+        Route::post('/checkoutForm', [CoffeeController::class, 'getcheckOutForm'])->name('coffee.checkoutForm');
         Route::post('/checkout', [CoffeeController::class, 'checkout'])->name('coffee.checkout');
+        Route::get('/success', [CoffeeController::class, 'successPayment'])->name('payment.success');
 
     });
 });

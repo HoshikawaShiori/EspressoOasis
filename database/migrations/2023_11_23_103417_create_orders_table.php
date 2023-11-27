@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('user_id');
-            $table->text('cart');
-            $table->text('address');
             $table->string('name');
-            $table->payment('payment_id');
+            $table->text('address');
+            $table->string('email');
+            $table->string('phone');
+            $table->string('moreInfo')->nullable;
+            $table->text('cart');
+            $table->string('checkout_id');
         });
     }
 

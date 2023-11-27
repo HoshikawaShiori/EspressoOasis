@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'email',
+        'username',
         'password',
     ];
 
@@ -44,5 +46,9 @@ class User extends Authenticatable
 
     public function orders(){
         return $this->hasMany(Order::class);    
+    }
+    public function cart()
+    {
+        return $this->hasOne(Cart::class, 'user_id');
     }
 }

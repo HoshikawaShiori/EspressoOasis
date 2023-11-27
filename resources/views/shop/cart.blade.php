@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Shop
+    Cart
 @endsection
 @section('styles')
     <link rel="stylesheet" href="{{ URL::to('src/css/shop-card.css') }}">
@@ -14,26 +14,29 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Product Name</th>
-                            <th>Price</th>
+                            <th>Unit Price</th>
                             <th>Quantity</th>
+                            <th>Total Price</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($coffees as $coffee)
                             <tr>
-                                <td>{{ $coffee['item']['title'] }}</td>
-                                <td>PHP {{ $coffee['price'] }}</td>
+                                <td><strong>{{ json_decode($coffee['item'], true)['sizes'][$coffee['size']]['label'] }}-</strong>{{$coffee['brew']}} {{ $coffee['item']['title'] }}</td>
+                                <td>{{ json_decode($coffee['item'], true)['sizes'][$coffee['size']]['price'] }}</td>
                                 <td>
-                                    <div class="input-group">
-                                        <a href= "{{route('coffee.reduce', ['id'=> $coffee['item']['id']])}}"class="btn btn-secondary btn-sm" type="button">-</a>
-                                        <input type="text" class="form-control text-center"
+                                    <div class="input-group ">
+                                        <a href="{{ route('coffee.reduce', ['combinedKey' => "{$coffee['oID']}"]) }}" class="btn btn-secondary btn-sm" type="button">-</a>
+                                        <input type="text" class="form-control  text-center"
                                             value="{{ $coffee['qty'] }}" readonly>
-                                            <a href= "{{route('coffee.increase', ['id'=> $coffee['item']['id']])}}"class="btn btn-secondary btn-sm" type="button">+</a>
+                                            <a href="{{ route('coffee.increase', ['combinedKey' => "{$coffee['oID']}"]) }}" class="btn btn-secondary btn-sm" type="button">+</a>
+
                                     </div>
                                 </td>
+                                <td>PHP {{ $coffee['price'] }}</td>
                                 <td>
-                                    <a href= "{{route('coffee.remove', ['id'=> $coffee['item']['id']])}}" class="btn btn-danger btn-sm">Remove</a>
+                                    <a href= "{{route('coffee.remove', ['combinedKey' => "{$coffee['oID']}"]) }}" class="btn btn-danger btn-sm">Remove</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -41,7 +44,7 @@
                 </table>
                 <div class="text-center">
                     <strong>Total: PHP {{ $totalPrice }}</strong>
-                    <form action="{{ route('coffee.checkout') }}" method="POST">
+                    <form action="{{ route('coffee.checkoutForm') }}" method="POST">
                         @csrf
                         <!-- Other form fields -->
                         <button type="submit" class="btn btn-primary">Checkout</button>

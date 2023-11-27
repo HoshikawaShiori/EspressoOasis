@@ -60,17 +60,17 @@ datalist {
     padding: 0;
   }
 
- .btn-circle.btn-xl {
+  .card-body .btn-circle.btn-xl {
     width: 80px;
-    background: #D19B6C;
+    background: #D19B6C!important;
     height: 80px;
     padding: 11px 16px;
     border-radius: 60px;
     font-size: 15px;
     text-align: center;
 }
-.btn-circle.btn-xl:hover {
-    background: #c9b29d;
+.card-body .btn-circle.btn-xl:hover {
+    background: #c9b29d !important;
 
 }
 .card-body .btn{

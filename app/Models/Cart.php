@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
-
-class Cart
+class Cart extends Model
 {
     public $items=null;
     public $totalQty=0;
@@ -14,44 +14,68 @@ class Cart
             $this->items = $oldCart->items;
             $this->totalQty = $oldCart->totalQty;
             $this->totalPrice = $oldCart->totalPrice;
+            $this->belongsTo(User::class);
         }
     }
+    public function cart() {
+        return  $this->belongsTo(User::class);
+       }
 
-    public function add($item, $id){
-        $storedItem = ['qty'=> 0, 'price' => $item -> price,'item' => $item];
-        if($this->items){
-            if(array_key_exists($id, $this->items)){
-                $storedItem = $this->items[$id];
+    public function add($item, $id, $size, $brew) {
+        $combinedKey = "$id-$size-$brew";
+    
+        if (isset($this->items[$combinedKey])) {
+            $storedItem = $this->items[$combinedKey];
+        } else {
+            $storedItem = [
+                'oID'=>$combinedKey,
+                'qty' => 0,
+                'size' => $size,
+                'price' => $item->sizes[$size]['price'],
+                'brew' => $brew,
+                'item' => $item,
+                
+            ];
+        }
+    
+        $storedItem['qty']++;
+        $storedItem['price'] = $item->sizes[$size]['price'] * $storedItem['qty'];
+        $this->items[$combinedKey] = $storedItem;
+        $this->totalQty++;
+        $this->totalPrice += $item->sizes[$size]['price'];
+    }
+    
+
+    public function increase($combinedKey) {
+    if (isset($this->items[$combinedKey])) {
+        $this->items[$combinedKey]['qty']++;
+        $this->items[$combinedKey]['price'] += $this->items[$combinedKey]['item']->sizes[$this->items[$combinedKey]['size']]['price'];
+        $this->totalQty++;
+        $this->totalPrice += $this->items[$combinedKey]['item']->sizes[$this->items[$combinedKey]['size']]['price'];
+    }
+    }
+
+    public function reduce($combinedKey) {
+        if (isset($this->items[$combinedKey])) {
+            $this->items[$combinedKey]['qty']--;
+            $this->items[$combinedKey]['price'] -= $this->items[$combinedKey]['item']->sizes[$this->items[$combinedKey]['size']]['price'];
+            $this->totalQty--;
+            $this->totalPrice -= $this->items[$combinedKey]['item']->sizes[$this->items[$combinedKey]['size']]['price'];
+
+            if ($this->items[$combinedKey]['qty'] <= 0) {
+                unset($this->items[$combinedKey]);
             }
         }
-        $storedItem['qty']++;
-        $storedItem['price']=$item->price * $storedItem['qty'];
-        $this->items[$id] = $storedItem;
-        $this->totalQty++;
-        $this->totalPrice+= $item->price;
     }
 
-    public function reduce($id){
-        $this->items[$id]['qty']--;
-        $this->items[$id]['price']-=$this->items[$id]['item']['price'];
-        $this->totalQty--;
-        $this->totalPrice-=$this->items[$id]['item']['price'];
-
-        if ($this->items[$id]['qty'] <= 0) {
-            unset($this->items[$id]);
-        }
+    public function remove($combinedKey){
+        $this->totalQty-=$this->items[$combinedKey]['qty'];
+        $this->totalPrice-=$this->items[$combinedKey]['price'];
+        unset($this->items[$combinedKey]);
     }
 
-    public function increase($id){
-        $this->items[$id]['qty']++;
-        $this->items[$id]['price']+=$this->items[$id]['item']['price'];
-        $this->totalQty++;
-        $this->totalPrice+=$this->items[$id]['item']['price'];
-    }
-
-    public function remove($id){
-        $this->totalQty-=$this->items[$id]['qty'];
-        $this->totalPrice-=$this->items[$id]['price'];
-        unset($this->items[$id]);
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
