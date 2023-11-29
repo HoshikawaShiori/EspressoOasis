@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Route;
 use Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
+use App\Http\Requests;
+use Session;
+use PhpParser\JsonDecoder;
+use App\Models\Coffee;
+use App\Models\Order;
+use App\Models\Cart;
+use GuzzleHttp\Client;
 
 
 class adminController extends Controller
@@ -37,4 +44,7 @@ class adminController extends Controller
        
            return redirect()->back()->with('error', 'Invalid credentials');
        }
+
+
+
 }

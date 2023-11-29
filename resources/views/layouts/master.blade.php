@@ -30,7 +30,9 @@
 <body>
     @include('partials.header')
     <div class="container-fluid">
+        
         @yield('content') 
+        
         @include('partials.footer')   
     </div>
 

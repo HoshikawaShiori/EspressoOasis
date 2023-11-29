@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         $table->timestamps();
         $table->string('imagePath');
-        $table->string('title');
+        $table->string('title')->unique();
         $table->json('sizes')->nullable(); // Store sizes and their prices as JSON data
     });
     }

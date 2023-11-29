@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Session;
-
+use PhpParser\JsonDecoder;
 use App\Models\Coffee;
 use App\Models\Order;
 use App\Models\Cart;
@@ -13,6 +13,12 @@ use GuzzleHttp\Client;
 use Auth;
 class CoffeeController extends Controller
 {
+    //retrieve all products for admin side
+    public function getProducts(){
+        $coffees = Coffee::all();
+        return view('admin.products', ['coffees'=> $coffees]);
+
+    }
     public function getIndex(){
         $coffees = Coffee::all();
         return view('landing.index', ['coffees'=> $coffees]);

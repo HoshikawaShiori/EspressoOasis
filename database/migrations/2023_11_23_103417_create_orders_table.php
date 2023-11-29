@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('address');
             $table->string('email');
             $table->string('phone');
-            $table->string('moreInfo')->nullable;
+            $table->string('moreInfo')->nullable();
             $table->text('cart');
             $table->string('checkout_id');
         });

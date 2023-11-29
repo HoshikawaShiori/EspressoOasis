@@ -28,14 +28,17 @@
 </head>
 
 <body>
-        
-    @endif
-        @include('partials.adminHeader')
-        <div class="container">
-        @yield('content') 
+
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            @include('partials.adminHeader')
+            <div class="col px-1">
+                @yield('content')
+            </div>
         </div>
-        </div>
+    </div>
     
+
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>

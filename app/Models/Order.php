@@ -11,6 +11,6 @@ class Order extends Model
       'name', 'address', 'email', 'phone', 'moreInfo'
   ];
    public function user() {
-    return  $this->belongsTo(User::class);
+    return  $this->belongsTo(User::class) ;
    }
 }

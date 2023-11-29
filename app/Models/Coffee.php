@@ -10,10 +10,13 @@ class Coffee extends Model
    protected $fillable = [
         'imagePath',
         'title',
-        'sizes', // Assuming 'sizes' is the JSON field in your 'coffees' table
+        'sizes', 
     ];
 
     // Accessor for 'sizes' attribute
+    protected $casts = [
+        'sizes' => 'array',
+    ];
     public function getSizesAttribute($value)
     {
         return json_decode($value, true);

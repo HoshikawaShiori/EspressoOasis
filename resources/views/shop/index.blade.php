@@ -7,11 +7,24 @@
 @endsection
 @section('content')
     <div class="container">
-        @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+        @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+
+
         <h1 class=" display-4 text-center pt-5 pe-0 shop-head">Brewery</h1>
         <div class="row row-cols-1 row-cols-md-2 g-4">
 
@@ -82,68 +95,68 @@
         </div>
     </div>
 
-    @section('scripts')
-        @foreach ($coffees->chunk(1) as $coffeeChunk)
-            @foreach ($coffeeChunk as $coffee)
-                <script>
-                    $(document).ready(function() {
-                        $('input[name="{{ $coffee->title }}-options"]').change(function() {
-                            let selectedValue = $('input[name="{{ $coffee->title }}-options"]:checked').val();
+@section('scripts')
+    @foreach ($coffees->chunk(1) as $coffeeChunk)
+        @foreach ($coffeeChunk as $coffee)
+            <script>
+                $(document).ready(function() {
+                    $('input[name="{{ $coffee->title }}-options"]').change(function() {
+                        let selectedValue = $('input[name="{{ $coffee->title }}-options"]:checked').val();
 
-                            if (selectedValue) {
-                                console.log(
-                                    selectedValue); // Log the value of the selected radio button ("Hot" or "Iced")
-                            } else {
-                                console.log('No option selected'); // If no option is selected
-                            }
-                        });
+                        if (selectedValue) {
+                            console.log(
+                                selectedValue); // Log the value of the selected radio button ("Hot" or "Iced")
+                        } else {
+                            console.log('No option selected'); // If no option is selected
+                        }
                     });
-                </script>
+                });
+            </script>
 
-                <script>
-                    $(document).ready(function() {
-                        var sizes = JSON.parse('{!! addslashes(json_encode($coffee->sizes)) !!}'); // Parse sizes array from PHP to JavaScript
+            <script>
+                $(document).ready(function() {
+                    var sizes = JSON.parse('{!! addslashes(json_encode($coffee->sizes)) !!}'); // Parse sizes array from PHP to JavaScript
 
-                        $('#customRange{{ $coffee->id }}').on('input', function() {
-                            var selectedSize = $(this).val();
-                            var price = sizes[0]['price']; // Default price for the first size
+                    $('#customRange{{ $coffee->id }}').on('input', function() {
+                        var selectedSize = $(this).val();
+                        var price = sizes[0]['price']; // Default price for the first size
 
-                            if (selectedSize >= 0 && selectedSize < sizes.length) {
-                                price = sizes[selectedSize]['price']; // Get price based on selected size index
-                            }
-                            console.log($('#customRange{{ $coffee->id }}').val());
+                        if (selectedSize >= 0 && selectedSize < sizes.length) {
+                            price = sizes[selectedSize]['price']; // Get price based on selected size index
+                        }
+                        console.log($('#customRange{{ $coffee->id }}').val());
 
-                            $('#price{{ $coffee->id }}').text(price);
-                        });
+                        $('#price{{ $coffee->id }}').text(price);
                     });
-                </script>
+                });
+            </script>
 
 
-                <script>
-                    $(document).ready(function() {
-                        $('#addToCartForm{{ $coffee->id }}').on('submit', function(event) {
-                            event.preventDefault();
+            <script>
+                $(document).ready(function() {
+                    $('#addToCartForm{{ $coffee->id }}').on('submit', function(event) {
+                        event.preventDefault();
 
-                            var sizeRange = document.getElementById('customRange{{ $coffee->id }}');
-                            var selectedSize = sizeRange.value;
+                        var sizeRange = document.getElementById('customRange{{ $coffee->id }}');
+                        var selectedSize = sizeRange.value;
 
-                            var selectedOptionValue = $('input[name="{{ $coffee->title }}-options"]:checked').val();
+                        var selectedOptionValue = $('input[name="{{ $coffee->title }}-options"]:checked').val();
 
-                            if (selectedSize >= 0 && selectedSize < {{ count($coffee->sizes) }}) {
-                                var newAction =
-                                    '{{ route('coffee.addToCart', ['id' => $coffee->id, 'sizeIndex' => ':sizeIndex', 'brew' => ':brew']) }}';
-                                newAction = newAction.replace(':sizeIndex', selectedSize);
-                                newAction = newAction.replace(':brew', selectedOptionValue);
+                        if (selectedSize >= 0 && selectedSize < {{ count($coffee->sizes) }}) {
+                            var newAction =
+                                '{{ route('coffee.addToCart', ['id' => $coffee->id, 'sizeIndex' => ':sizeIndex', 'brew' => ':brew']) }}';
+                            newAction = newAction.replace(':sizeIndex', selectedSize);
+                            newAction = newAction.replace(':brew', selectedOptionValue);
 
-                                $(this).attr('action', newAction);
-                            }
+                            $(this).attr('action', newAction);
+                        }
 
-                            this.submit();
-                        });
+                        this.submit();
                     });
-                </script>
-            @endforeach
+                });
+            </script>
         @endforeach
-    @endsection
+    @endforeach
+@endsection
 
 @endsection
