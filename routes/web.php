@@ -64,6 +64,8 @@ Route::group(['prefix'=> 'a'], function () {
         Route::post('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
         Route::get('/orders', [dashboardController::class, 'getOrders'])->name('orders');
         Route::get('/destroyCoffee{id}', [dashboardController::class, 'Coffeedestroy'])->name('coffee.destroy');
+        Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
+        
         
     });
 });

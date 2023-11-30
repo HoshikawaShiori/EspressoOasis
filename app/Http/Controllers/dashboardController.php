@@ -33,7 +33,64 @@ class dashboardController extends Controller
         });
         return view('admin.orders', ['orders'=> $orders]);
     }
+    public function editProduct(Request $request, $id){
+        
+ 
 
+        $jsonData = [];
+        $imagePath ="";
+        if ($request->has('Editsize') && is_array($request->input('Editsize'))) {
+            foreach ($request->input('Editsize') as $key => $size) {
+                $jsonData[] = [
+                    'label' => $size,
+                    'price' => intval($request->input('Editprice')[$key] ?? 0),
+                ];
+            }
+        }
+     
+
+        if ($request->hasFile('EditimagePath') && $request->file('EditimagePath')){
+            
+            $image = $request->file('EditimagePath');
+            $fileName = $image->getClientOriginalName();
+            $imagePath = 'src/images/' . $fileName;
+            Storage::disk('public')->putFileAs('src/images', $image, $fileName);
+
+            $image = $request->file('EditimagePath');
+            $fileName = $image->getClientOriginalName();
+        
+            $image->storeAs('src/images', $fileName, 'public');
+
+            $imagePath = 'src/images/' . $fileName;
+        } else{
+                    // Find the Coffee record based on an ID (assuming you have the ID)
+            $coffee = Coffee::findOrFail($id);
+
+            $coffee->title = $request->input('Edittitle');
+            $coffee->sizes = $jsonData;
+
+            // Save the changes
+            $coffee->save();
+
+            // Redirect with a success message
+            return redirect()->route('products')->with('success', 'Updated Successfully');
+        }
+
+                // Find the Coffee record based on an ID (assuming you have the ID)
+                $coffee = Coffee::findOrFail($id);
+
+                // Update the attributes with new values
+                $coffee->imagePath = $imagePath;
+                $coffee->title = $request->input('Edittitle');
+                $coffee->sizes = $jsonData;
+        
+                // Save the changes
+                $coffee->save();
+        
+                // Redirect with a success message
+                return redirect()->route('products')->with('success', 'Updated Successfully');
+
+    }
     public function postProduct(Request $request){
         
         $validator = Validator::make($request->all(), [
