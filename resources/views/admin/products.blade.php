@@ -268,7 +268,7 @@
     </main>
     
 @endsection
-@section('scripts')
+@section('Navscripts')
     <script>
         function preview() {
             var frame = document.getElementById('frame');

@@ -215,6 +215,7 @@ class CoffeeController extends Controller
         $oldCart = Session::get('cart');
         $shippingData=Session::get('shippingData');
         $checkout_id=Session::get('checkout_id');
+        $defaultOrderStatus= "Processing";
         $cart= new Cart($oldCart);
 
     
@@ -223,6 +224,7 @@ class CoffeeController extends Controller
         $order->fill($shippingData);
         $order->cart= serialize($cart);
         $order->checkout_id = $checkout_id;
+        $order->orderStatus = $defaultOrderStatus;
 
         Auth::user()->orders()->save($order);
 

@@ -6,13 +6,13 @@
 <section class="vh-100">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-6 text-black">
+        <div class="col-sm-6 text-black mt-5">
   
           <div class="d-flex align-items-center justify-content-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
   
             <form style="width: 23rem;" action="{{ route('user.signin') }}" method="POST">
   
-              <h3 class="fw-normal mb-3 pb-3 text-center" style="letter-spacing: 1px;">Log in</h3>
+
               <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign in</p>
               @if(session('error'))
               <div class="alert alert-danger">
@@ -35,7 +35,7 @@
               </div>
 
             <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                <a href="{{ route('login.google') }}" class="btn btn-danger btn-md btn-block"
+                <a href="{{ route('login.google') }}" class="btn btn-danger btn-md btn-block bg-danger"
                 role="button">
                 Continue with <i class="fab fa-google me-2"></span></i></a>
             </div>

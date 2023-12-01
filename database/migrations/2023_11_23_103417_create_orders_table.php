@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('moreInfo')->nullable();
             $table->text('cart');
             $table->string('checkout_id');
+            $table->string('orderStatus');
         });
     }
 

@@ -34,7 +34,7 @@ class CoffeeTableSeeder extends Seeder
             ],
             [
                 'imagePath' => 'src/images/capuccino.jpg',
-                'title' => 'Cappuccino',
+                'title' => 'Frappuccino',
                 'sizes' => [
                     ['label' => 'S', 'price' => 80.00],
                     ['label' => 'M', 'price' => 100.00],

@@ -3,8 +3,8 @@
         <a class="navbar-brand" href="{{ route('coffee.index') }}"><img src="{{ asset('src/images/logo2.png') }}" alt="navbar layout"
                 class="img-fluid" width="200" height="200"/></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation" style="color: #D19B6C;">
+            <span><i class="fa-solid fa-bars" style="color: #D19B6C;"></i></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav mx-auto">
@@ -37,7 +37,7 @@
                             User
                         @endif
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <ul class="dropdown-menu bg-light" aria-labelledby="dropdownMenuButton">
                         @if(Auth::check())
                             <li><a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a></li>
                             <li role="seperator" class="divider"></li>

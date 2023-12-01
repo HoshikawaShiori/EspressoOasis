@@ -154,6 +154,21 @@
                         this.submit();
                     });
                 });
+
+            </script>
+
+            <script>
+                $(document).ready(function() {
+
+                    $(window).scroll(function() {
+                        var navbar = $("#navbar");
+                        if ($(window).scrollTop() > 50) {
+                            navbar.removeClass("navbar-transparent").addClass("bg-light");
+                        } else {
+                            navbar.removeClass("bg-light").addClass("navbar-transparent");
+                        }
+                    });
+                });
             </script>
         @endforeach
     @endforeach

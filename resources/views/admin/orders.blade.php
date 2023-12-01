@@ -22,7 +22,15 @@
                                 <div class="col-md-auto">
                                 </div>
                                 <div class="col col-lg-2 text-align-right">
-                                    <button type="button" class="btn btn-success"> Order Complete </button>
+                                    <div class="col col-lg-2 text-align-right">
+                                        @if($order['orderStatus'] == 'Order Complete')
+                                            <button type="button" class="btn btn-success">{{ $order['orderStatus'] }}</button>
+                                        @elseif($order['orderStatus'] == 'Processing' || $order['orderStatus'] == 'Serving')
+                                            <button type="button" class="btn btn-warning">{{ $order['orderStatus'] }}</button>
+                                        @else
+                                            <button type="button" class="btn btn-danger">{{ $order['orderStatus'] }}</button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-">
