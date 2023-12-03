@@ -3,6 +3,7 @@
     Products
 @endsection
 @section('content')
+@include('partials.admintopNav')
     @if (count($errors) > 0)
         <div class="alert alert-danger">
             <ul>
@@ -268,7 +269,7 @@
     </main>
     
 @endsection
-@section('Navscripts')
+@section('scripts')
     <script>
         function preview() {
             var frame = document.getElementById('frame');

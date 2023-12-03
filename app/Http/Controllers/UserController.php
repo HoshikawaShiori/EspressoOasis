@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 use Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -32,6 +34,58 @@ class UserController extends Controller
     return redirect()->route('coffee.shop')->with('success','');
    }
 
+   public function postAdmin(Request $request, $role){
+    $this->validate($request, [
+    'email'=> 'email|required|unique:users',
+    'username' => 'required|min:6',
+    'password'=> 'required|min:8']);
+
+    $user = new User([
+        'email'=> $request->input('email'),
+        'username' => $request->input('username'),
+        'password'=> bcrypt($request->input('password')),
+    ]);
+    $user-> save();
+    $user->assignRole($role);
+
+    return redirect()->route('accounts')->with('success','Account Added');
+   }
+
+   public function editAdmin(Request $request, $id){
+       
+    $this->validate($request, [
+        'editemail' => [
+            'email',
+            'required',
+            Rule::unique('users', 'email')->ignore($id),
+        ],
+        'editusername' => 'required|min:6',
+    ], [
+        'editemail.email' => 'The email must be a valid email address.',
+        'editemail.required' => 'The email field is required.',
+        'editemail.unique' => 'The email has already been taken.',
+        'editusername.required' => 'The username field is required.',
+        'editusername.min' => 'The username must be at least :min characters.',
+        'editpassword.min' => 'The password must be at least :min characters.'
+    ]);
+    
+        $selectedRoleId = $request->input('editrole');
+        $role = Role::findOrFail($selectedRoleId);
+
+        $user = User::findOrFail($id);
+        $user->email=$request->input('editemail');
+        $user->username=$request->input('editusername');
+
+        if ($request->filled('editpassword')) {
+            $user->password = bcrypt($request->input('editpassword'));
+        }
+        $user->roles()->sync([$role->id]);
+        $user->save();  
+        return redirect()->route('accounts')->with('success','Account Editted');
+  
+   }
+
+
    public function getSignin(){
     return view('user.signin');
    }
@@ -45,8 +99,8 @@ class UserController extends Controller
        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
            $user = Auth::user();
    
-           if (!$user->hasUserRole()) {
-               return redirect()->route('dashboard')->with('success', 'Logged in successfully!');
+           if ($user->hasUserRole()) {
+               return redirect()->route('coffee.index')->with('success', 'Logged in successfully!');
            } else {
                Auth::logout();
                return redirect()->back()->with('error', 'Invalid Account');

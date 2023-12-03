@@ -62,8 +62,9 @@ class User extends Authenticatable
 
     public function hasAuthorizedRole()
     {
-        return $this->roles()->wherePivot('role_id', 1)->exists();
+        return $this->roles()->whereIn('id', [1, 3, 4])->exists();
     }
+    
     public function hasAnyRole($roles)
     {
         return $this->roles()->whereIn('name', $roles)->exists();

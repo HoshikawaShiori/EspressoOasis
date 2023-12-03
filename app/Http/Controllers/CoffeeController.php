@@ -173,7 +173,7 @@ class CoffeeController extends Controller
                 ],
             ],
         ];
-        $username = env('PAYMONGO_SECRET_KEY'); // Replace with your Paymongo API key
+        $username = config('api_keys.PAYMONGO_SECRET_KEY');; // Replace with your Paymongo API key
         $password = ''; // For basic auth, the password is empty
 
         // Make the request to create a checkout session in Paymongo
@@ -238,7 +238,7 @@ class CoffeeController extends Controller
 
     public function expireCheckout($checkoutSessionId){
     
-        $secretApiKey = env('PAYMONGO_SECRET_KEY');
+        $secretApiKey = config('api_keys.PAYMONGO_SECRET_KEY');
 
         $client = new Client([
             'base_uri' => 'https://api.paymongo.com/v1/checkout_sessions/checkout_session_id/expire/',

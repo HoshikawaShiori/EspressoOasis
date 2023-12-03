@@ -63,3 +63,21 @@
 
 
 @endsection
+
+@section('scripts')
+            <script>
+                $(document).ready(function () {
+                    // Remove 'fixed-top' class onload
+                    $('#navbar').removeClass('fixed-top');
+
+                    $(window).scroll(function () {
+                        // Add 'fixed-top' class on scroll
+                        if ($(this).scrollTop() > 50) {
+                            $('#navbar').addClass('fixed-top');
+                        } else {
+                            $('#navbar').removeClass('fixed-top');
+                        }
+                    });
+                });
+            </script>
+@endsection

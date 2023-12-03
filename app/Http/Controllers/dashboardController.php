@@ -17,25 +17,79 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
+use Carbon;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 
 class dashboardController extends Controller
 {
     public function getDashboard(){
-        return view('admin.dashboard');
-
-    }
-
-    public function getOrders(){
         $orders = Order::all();
-        $orders-> transform(function($order, $key){
-            $order->cart=unserialize($order->cart);
+
+        $orders->transform(function ($order, $key) {
+            $order->cart = unserialize($order->cart);
+            //dd($order->cart);
             return $order;
         });
-        return view('admin.orders', ['orders'=> $orders]);
+ 
+        return view('admin.dashboard', ['orders' => $orders]);
+
+    }
+ 
+    public function getAccounts(){
+    $users = User::whereDoesntHave('roles', function ($query) {
+        $query->where('role_id', 2);
+    })->with('roles:id,name')->get(); 
+
+    return view('admin.accounts', ['users' => $users]);
+    }
+
+    public function getAPIs(){
+
+        return view('admin.apis');
+
+    }
+    
+    public function accountDestroy($id){
+        $users = User::find($id);
+        $users->delete();
+        return redirect()->route('users')->with('success', 'Removed Successfully');
+    }
+    public function getOrders()
+    {
+        $orders = Order::all();
+
+        $orders->transform(function ($order, $key) {
+            $order->cart = unserialize($order->cart);
+            return $order;
+        });
+
+        $orders = $orders->sortBy(function ($order) {
+            switch ($order->status) {
+                case 'Processing':
+                    return 1;
+                case 'Serving':
+                    return 2;
+                case 'Order Completed':
+                    return 3;
+                case 'Cancelled':
+                    return 4;
+                default:
+                    return 5;
+            }
+        })->sortBy('created_at');
+
+        return view('admin.orders', ['orders' => $orders]);
+    }
+
+    public function updateStatus(Request $request, $id, $status){
+
+        $order = order::findOrFail($id);
+        $order->orderStatus = $status;
+        $order->save();
+        return redirect()->route('orders')->with('success', 'Updated Successfully');
     }
     public function editProduct(Request $request, $id){
-        
- 
 
         $jsonData = [];
         $imagePath ="";
@@ -106,10 +160,8 @@ class dashboardController extends Controller
         $image = $request->file('imagePath');
         $fileName = $image->getClientOriginalName();
         
-        // Store the file in the public directory
         Storage::disk('public')->putFileAs('src/images', $image, $fileName);
         
-        // Get the path to the stored file
         $imagePath = 'src/images/' . $fileName;
 
         $jsonData = [];
@@ -126,11 +178,9 @@ class dashboardController extends Controller
         if ($request->hasFile('imagePath')) {
             $image = $request->file('imagePath');
             $fileName = $image->getClientOriginalName();
-        
-            // Store the file in the 'public' disk
+    
             $image->storeAs('src/images', $fileName, 'public');
         
-            // Get the full path to the stored file
             $imagePath = 'src/images/' . $fileName;
         }
         
