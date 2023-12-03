@@ -24,10 +24,17 @@ class CoffeeController extends Controller
         return view('landing.index', ['coffees'=> $coffees]);
 
     }
+    
     public function getShop(){
 
         $coffees = Coffee::all();
         return view('shop.index', ['coffees'=> $coffees]);
+    }
+    public function getAbout(){
+        return view('shop.about');
+    }
+    public function getContact(){
+        return view('shop.contact');
     }
 
     public function getAddToCart(Request $request, $id, $sizeIndex, $brew) {

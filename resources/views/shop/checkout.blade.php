@@ -104,6 +104,7 @@
                 </div>
             </div>
         </div>
+        @include('partials.footer')  
     @else
         <div class="row">
             <div class="col-sm-6 offset-sm-3 text-center">

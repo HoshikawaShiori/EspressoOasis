@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\dashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CoffeeController;
@@ -20,6 +21,9 @@ use App\Http\Controllers\UserController;
     Route::get('/', [CoffeeController::class, 'getIndex'])->name('coffee.index');
     Route::get('/shop', [CoffeeController::class, 'getShop'])->name('coffee.shop');
     Route::get('login/google/callback',[UserController::class, 'handleGoogleCallback'])->name('google.callback');
+    Route::get('/aboutus', [CoffeeController::class, 'getAbout'])->name('about');
+    Route::get('/contact', [CoffeeController::class, 'getContact'])->name('contact');
+    Route::post('/sendmail', [ContactFormController::class, 'submitForm'])->name('contact.submit');
 
     
 

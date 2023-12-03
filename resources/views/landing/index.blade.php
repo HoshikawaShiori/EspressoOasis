@@ -104,7 +104,7 @@
                     alt="Responsive image">
             </div>
 
-
+            @include('partials.footer')  
         </div>
     </div>
 @endsection

@@ -93,7 +93,9 @@
                 @endforeach
             @endforeach
         </div>
+        
     </div>
+    @include('partials.footer')  
 
 @section('scripts')
     @foreach ($coffees->chunk(1) as $coffeeChunk)

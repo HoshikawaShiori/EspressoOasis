@@ -29,11 +29,10 @@
 
 <body>
     @include('partials.header')
-    <div class="container-fluid">
+    <div class="container-fluid px-0">
         
         @yield('content') 
-        
-        @include('partials.footer')   
+         
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
