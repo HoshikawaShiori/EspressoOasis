@@ -111,10 +111,10 @@
                                                             name="editusername" value="{{ $user->username }}" required>
                                                         <p class="text-sm text-danger">Leave password field blank if there is no update intent</p>
                                                         <label for="editpassword{{ $user->id }}">Password:</label>
-                                                        <input type="editpassword" class="form-control" placeholder="Password" minlength="8" id="editpassword{{ $user->id }}"
+                                                        <input type="password" class="form-control" placeholder="Password" minlength="8" id="editpassword{{ $user->id }}"
                                                             name="editpassword">
                                                         <label for="editconfirm_password{{ $user->id }}">Confirm Password:</label>
-                                                        <input type="editpassword" class="form-control" minlength="8" placeholder="Confirm Password"
+                                                        <input type="password" class="form-control" minlength="8" placeholder="Confirm Password"
                                                             id="editconfirm_password{{ $user->id }}"  name="editconfirm_password">
                                                         <label for="editrole{{ $user->id }}">Select a role:</label>
                                                         <select class="form-select form-control mt-3" aria-label="Select a role" id="editrole{{ $user->id }}" name="editrole" required>

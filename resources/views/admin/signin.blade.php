@@ -37,7 +37,7 @@
 
           <form style="width: 23rem;" action="{{ route('signin') }}" method="POST">
 
-            <h3 class="fw-normal mb-3 pb-3 text-center" style="letter-spacing: 1px;">Log in</h3>
+
             <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign in</p>
             @if(session('error'))
             <div class="alert alert-danger">

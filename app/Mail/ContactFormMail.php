@@ -23,18 +23,20 @@ class ContactFormMail extends Mailable
     public function build()
     {
         $emailBody = "From: " . $this->formData['email'] . "\n\n\n" . $this->formData['message'];
-
+        $emailBody = $this->formData['subject'];
         return $this->subject('New Contact Form Submission')
-                    ->with(['data' => $emailBody])
-                    ->view('shop.mailcontent');
+                    ->view('shop.mailcontent')
+                    ->with(['emailBody' => $emailBody]);
     }
+                    
+    
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Contact Form Mail',
+            subject: $this->formData['subject'],
         );
     }
 

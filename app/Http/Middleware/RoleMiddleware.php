@@ -15,11 +15,24 @@ class RoleMiddleware
      */
     public function handle($request, Closure $next, ...$roles)
 {
-    if (!$request->user() || $request->user()->hasUserRole()) {
+    if ($request->user()->hasUserRole()) {
         abort(403, 'Unauthorized.');
     }
+    elseif (!$request->user()->hasAdminRole()) {
+        return $next($request);
+    }
 
-    return $next($request);
+    elseif ($request->user()->hasSuperAdminRole()) {
+        return $next($request);
+    }   
+
+
+    elseif (!$request->user()->hasAttendantRole()) {
+        return $next($request);
+    }
+    else{
+        abort(403, 'Unauthorized.');
+    }
 }
 
 }

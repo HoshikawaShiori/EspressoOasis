@@ -64,6 +64,21 @@ class User extends Authenticatable
     {
         return $this->roles()->whereIn('id', [1, 3, 4])->exists();
     }
+
+    public function hasAdminRole()
+    {
+        return $this->roles()->wherePivot('role_id', 1)->exists();
+    }
+
+    public function hasSuperAdminRole()
+    {
+        return $this->roles()->wherePivot('role_id', 3)->exists();
+    }
+
+    public function hasAttendantRole()
+    {
+        return $this->roles()->wherePivot('role_id', 4)->exists();
+    }
     
     public function hasAnyRole($roles)
     {

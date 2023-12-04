@@ -59,25 +59,44 @@ Route::group(['prefix'=> 'a'], function () {
         Route::get('/login', [adminController::class,'getSignin'])->name('signin');
         Route::post('/login', [adminController::class,'postSignin'])->name('signin');
         });
+        
+    Route::group(['middleware' => ['auth', 'role']], function () {
+        Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
+        
+        Route::group(['middleware' => ['auth', 'role:admin']], function () {
+        
+            Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
+            Route::get('/products', [CoffeeController::class, 'getProducts'])->name('products');
+            Route::get('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
+            Route::post('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
+            Route::get('/orderUpdate/{id}/{status}', [dashboardController::class, 'updateStatus'])->name('order.update');
+            Route::get('/destroyCoffee{id}', [dashboardController::class, 'Coffeedestroy'])->name('coffee.destroy');
+            Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
+        });
+        Route::group(['middleware' => ['auth', 'role:superadmin']], function () {
+        
+            Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
+            Route::get('/products', [CoffeeController::class, 'getProducts'])->name('products');
+            Route::get('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
+            Route::post('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
+            Route::get('/orders', [dashboardController::class, 'getOrders'])->name('orders');
+            Route::get('/destroyCoffee{id}', [dashboardController::class, 'Coffeedestroy'])->name('coffee.destroy');
+            Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
+            Route::get('/orderUpdate/{id}/{status}', [dashboardController::class, 'updateStatus'])->name('order.update');
+            Route::get('/accounts', [dashboardController::class,'getAccounts'])->name('accounts');
+            Route::get('/destroyAcctount{id}', [dashboardController::class, 'accountDestroy'])->name('user.destroy');
+            Route::post('/addAccount{role}', [UserController::class, 'postAdmin'])->name('account.create');
+            Route::post('/editAccount/{id}', [UserController::class, 'editAdmin'])->name('account.edit');
+        });
 
-    Route::group(['middleware' => ['auth', 'role:admin']], function () {
+        
+        Route::group(['middleware' => ['auth', 'role:attendant']], function () {
         
         Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
-        Route::get('/products', [CoffeeController::class, 'getProducts'])->name('products');
-        Route::get('/apis', [dashboardController::class,'getAPIs'])->name('apis');
-        Route::get('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
-        Route::post('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
         Route::get('/orders', [dashboardController::class, 'getOrders'])->name('orders');
-        Route::get('/destroyCoffee{id}', [dashboardController::class, 'Coffeedestroy'])->name('coffee.destroy');
-        Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
         Route::get('/orderUpdate/{id}/{status}', [dashboardController::class, 'updateStatus'])->name('order.update');
-        Route::get('/accounts', [dashboardController::class,'getAccounts'])->name('accounts');
-        Route::get('/destroyAcctount{id}', [dashboardController::class, 'accountDestroy'])->name('user.destroy');
-        Route::post('/addAccount{role}', [UserController::class, 'postAdmin'])->name('account.create');
-        Route::post('/editAccount/{id}', [UserController::class, 'editAdmin'])->name('account.edit');
-
-        
-        
     });
+    });
+
 });
 
