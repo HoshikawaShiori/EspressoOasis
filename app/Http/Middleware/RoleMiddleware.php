@@ -14,25 +14,28 @@ class RoleMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle($request, Closure $next, ...$roles)
-{
-    if ($request->user()->hasUserRole()) {
-        abort(403, 'Unauthorized.');
-    }
-    elseif (!$request->user()->hasAdminRole()) {
-        return $next($request);
-    }
+    {
+        if ($request->user()->hasAuthorizedRole()) {
+            return $next($request);
+        } else{
+            abort(403, 'Unauthorized.');
+        }
 
-    elseif ($request->user()->hasSuperAdminRole()) {
-        return $next($request);
-    }   
+         if ($request->user()->hasSuperAdminRole()) {
+            return $next($request);
+        }
 
+         if ($request->user()->hasAdminRole()) {
+            return $next($request);
+        }else{
+            abort(403, 'Unauthorized.');
+        }
 
-    elseif (!$request->user()->hasAttendantRole()) {
-        return $next($request);
+         if ($request->user()->hasAttendantRole()) {
+            return $next($request);
+        } else {
+            abort(403, 'Unauthorized.');
+        }
     }
-    else{
-        abort(403, 'Unauthorized.');
-    }
-}
 
 }

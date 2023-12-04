@@ -28,50 +28,34 @@
 @section('title')
     Sign-in
 @endsection
-<section class="vh-100">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-6 text-black">
+  <div class="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark">
 
-        <div class="d-flex align-items-center justify-content-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-5 col-lg-4">
+            <div class="login-wrap py-5 bg-light p-3 border rounded border-0">
+                <div class="img d-flex align-items-center justify-content-center" style="background-image: url(images/bg.jpg);"></div>
+                <h3 class="text-center mb-2">Welcome Back</h3>
+                <form action="{{ route('signin') }}" method="POST" class="login-form">
+                    <div class="form-group">
+                      <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                    </div>
 
-          <form style="width: 23rem;" action="{{ route('signin') }}" method="POST">
-
-
-            <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign in</p>
-            @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
+                    <div class="form-group">
+                        <button type="submit" class="btn form-control btn-primary rounded submit px-3 mt-5">Get Started</button>
+                    </div>
+                    {{ csrf_field() }}
+                </form>
             </div>
-        @endif
-
-            <div class="form-outline mb-4">
-              <input type="email" id="form2Example18" name="email" class="form-control form-control-lg" />
-              <label class="form-label" for="form2Example18">Email address</label>
-            </div>
-
-            <div class="form-outline mb-4">
-              <input type="password" id="form2Example28" name="password" class="form-control form-control-lg" />
-              <label class="form-label" for="form2Example28">Password</label>
-            </div>
-
-            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-              <button type="submit" class="btn btn-primary btn-lg">Login</button>
-            </div>
-            {{ csrf_field() }}
-
-          </form>
-
         </div>
-
-      </div>
-      <div class="col-sm-6 px-0 d-none d-sm-block">
-        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img3.webp"
-          alt="Login image" class="w-100 vh-100" style="object-fit: cover; object-position: left;">
-      </div>
     </div>
-  </div>
-</section>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
 integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"

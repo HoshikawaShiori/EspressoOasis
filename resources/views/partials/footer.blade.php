@@ -1,4 +1,4 @@
-<footer class="text-center bg-body-tertiary" style=" margin-top: auto;">
+<footer class="text-center bg-body-tertiary mt-2">
     <!-- Grid container -->
     <div class="container pt-4">
       <!-- Section: Social media -->

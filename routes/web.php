@@ -63,8 +63,8 @@ Route::group(['prefix'=> 'a'], function () {
     Route::group(['middleware' => ['auth', 'role']], function () {
         Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
         
-        Route::group(['middleware' => ['auth', 'role:admin']], function () {
-        
+        Route::group(['middleware' => ['role:admin']], function () {
+            Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
             Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
             Route::get('/products', [CoffeeController::class, 'getProducts'])->name('products');
             Route::get('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
@@ -73,7 +73,7 @@ Route::group(['prefix'=> 'a'], function () {
             Route::get('/destroyCoffee{id}', [dashboardController::class, 'Coffeedestroy'])->name('coffee.destroy');
             Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
         });
-        Route::group(['middleware' => ['auth', 'role:superadmin']], function () {
+        Route::group(['middleware' => ['role:superadmin']], function () {
         
             Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
             Route::get('/products', [CoffeeController::class, 'getProducts'])->name('products');

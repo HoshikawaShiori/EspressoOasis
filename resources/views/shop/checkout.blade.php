@@ -9,7 +9,7 @@
          
             <div class="row justify-content-center align-items-center vh-100">
                 <div class="col-md-8 mb-4">
-                  <h3 >Billing details</h3>
+                  <h3 >Customer Detail</h3>
                     <div class="card mb-4">
                         <div class="card-body">
                             <form action="{{ route('coffee.checkout') }}" method="POST">

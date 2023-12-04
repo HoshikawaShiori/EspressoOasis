@@ -55,8 +55,7 @@ class dashboardController extends Controller
         $users->delete();
         return redirect()->route('users')->with('success', 'Removed Successfully');
     }
-    public function getOrders()
-    {
+    public function getOrders(){
         $orders = Order::all();
 
         $orders->transform(function ($order, $key) {
@@ -64,8 +63,8 @@ class dashboardController extends Controller
             return $order;
         });
 
-        $orders = $orders->sortBy(function ($order) {
-            switch ($order->status) {
+        $orders = $orders->sortByDesc('created_at')->sortBy(function ($order) {
+            switch ($order->orderstatus) {
                 case 'Processing':
                     return 1;
                 case 'Serving':
@@ -77,10 +76,11 @@ class dashboardController extends Controller
                 default:
                     return 5;
             }
-        })->sortBy('created_at');
+        });
 
         return view('admin.orders', ['orders' => $orders]);
     }
+
 
     public function updateStatus(Request $request, $id, $status){
 

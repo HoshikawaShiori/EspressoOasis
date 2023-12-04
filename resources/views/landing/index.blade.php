@@ -100,7 +100,7 @@
             </div>
 
             <div class="col-md-6 pb-0 centered pe-5">
-                <img src="{{ asset('src/images/hero3.jpg') }}" style="height: 400px" class="img-fluid"
+                <img src="{{ asset('src/images/toa-heftiba-sn5YdKelBsg-unsplash.jpg') }}" style="height: 400px" class="img-fluid"
                     alt="Responsive image">
             </div>
 

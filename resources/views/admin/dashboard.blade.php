@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <div class="card bg-warning text-white">
+                            <div class="card bg-warning text-white px-2">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col mt-0">
@@ -88,8 +88,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-2">
-                            <div class="card bg-warning text-white">
+                        <div class="col-md-2 px-2">
+                            <div class="card bg-warning text-white pt-1">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col mt-0">
@@ -108,7 +108,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <div class="card bg-danger text-white">
+                            <div class="card bg-danger text-white px-2 pb-1">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col mt-0">

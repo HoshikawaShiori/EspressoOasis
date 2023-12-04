@@ -24,11 +24,13 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
         rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="{{ asset('src/images/favicon-16x16.png') }}">
     @yield('styles')
 </head>
 
 <body>
 
+    
     <div class="container-fluid">
         <div class="row flex-nowrap">
             @include('partials.adminHeader')

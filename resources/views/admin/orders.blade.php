@@ -19,6 +19,7 @@
                                 <div class="col">
                                     <div class="row p-3">
                                         <p><strong>Order ID: {{ $order['id'] }} </strong></p>
+                                        <p class="medium mb-0"><strong>Date: {{ \Carbon\Carbon::parse($order['created_at'])->format('Y-m-d H:i') }}</strong> </p>
                                         <p class="small mb-0">Name: {{ $order['name'] }} </p>
                                         <p class="small mb-0">Email: {{ $order['email'] }}</p>
                                         <p class="small mb-0">Phone: {{ $order['phone'] }}</p>
