@@ -5,7 +5,7 @@
         </a>
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
             <li class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link align-middle px-0">
+                <a href="{{ route('dashboard') }}" class="nav-link align-middle text-white px-0">
                     <i class="fa-solid fa-chart-column" style="color: #ffffff;"></i>
                     <span class="ms-1 d-none d-sm-inline">Dashboard</span>
                 </a>

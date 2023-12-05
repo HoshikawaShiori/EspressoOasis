@@ -35,6 +35,12 @@
             <div class="login-wrap py-5 bg-light p-3 border rounded border-0">
                 <div class="img d-flex align-items-center justify-content-center" style="background-image: url(images/bg.jpg);"></div>
                 <h3 class="text-center mb-2">Welcome Back</h3>
+                @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+              @endif
+    
                 <form action="{{ route('signin') }}" method="POST" class="login-form">
                     <div class="form-group">
                       <label for="email">Email</label>

@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
+use App\Exceptions;
 
 class dashboardController extends Controller
 {
@@ -53,7 +54,7 @@ class dashboardController extends Controller
     public function accountDestroy($id){
         $users = User::find($id);
         $users->delete();
-        return redirect()->route('users')->with('success', 'Removed Successfully');
+        return redirect()->route('accounts')->with('success', 'Removed Successfully');
     }
     public function getOrders(){
         $orders = Order::all();
@@ -62,6 +63,7 @@ class dashboardController extends Controller
             $order->cart = unserialize($order->cart);
             return $order;
         });
+        
 
         $orders = $orders->sortByDesc('created_at')->sortBy(function ($order) {
             switch ($order->orderstatus) {
@@ -88,6 +90,110 @@ class dashboardController extends Controller
         $order->orderStatus = $status;
         $order->save();
         return redirect()->route('orders')->with('success', 'Updated Successfully');
+    }
+
+    public function getPaymentId($checkout_id) {
+        $secretApiKey = config('api_keys.PAYMONGO_SECRET_KEY');
+        $username = config('api_keys.PAYMONGO_SECRET_KEY');
+        $password = '';
+    
+        $client = new Client();
+
+        $response = $client->get('https://api.paymongo.com/v1/checkout_sessions/' . $checkout_id, [
+            'auth' => [$username, $password],
+            'headers' => [
+                'accept' => 'application/json',
+                'authorization' => 'Basic ' . base64_encode($secretApiKey . ":"),
+            ],
+        ]);
+    
+        $jsonData = json_decode($response->getBody(), true);
+
+        if ($response->getStatusCode() === 200) {
+            if (isset($jsonData["data"]["attributes"]["payments"][0]["id"])) {
+                $paymentId = $jsonData["data"]["attributes"]["payments"][0]["id"];
+                return $paymentId;
+            } else {
+                return redirect()->route('orders')->with('success', 'Payment ID not found in response');
+            }
+        } else {
+            return redirect()->route('orders')->with('success', 'Failed to fetch payment details');
+        }
+    }
+
+    public function getAmount($checkout_id) {
+        $secretApiKey = config('api_keys.PAYMONGO_SECRET_KEY');
+        $username = config('api_keys.PAYMONGO_SECRET_KEY');
+        $password = '';
+    
+        $client = new Client();
+        $response = $client->get('https://api.paymongo.com/v1/checkout_sessions/' . $checkout_id, [
+            'auth' => [$username, $password],
+            'headers' => [
+                'accept' => 'application/json',
+                'authorization' => 'Basic ' . base64_encode($secretApiKey . ":"),
+            ],
+        ]);
+    
+        $jsonData = json_decode($response->getBody(), true);
+        if ($response->getStatusCode() === 200) {
+            if (isset($jsonData['data']['attributes']['line_items'][0]['amount'])) {
+                $amount = $jsonData['data']['attributes']['line_items'][0]['amount'];
+                return $amount;
+            } else {
+                return redirect()->route('orders')->with('success', 'Payment ammount not found in response');
+            }
+        } else {
+            return redirect()->route('orders')->with('success', 'Failed to fetch payment details');
+        }
+    }
+    public function cancelOrder(Request $request, $id, $checkout_id){
+        $this->getPaymentId($checkout_id);
+        $this->getAmount($checkout_id);
+        $payment_id = $this->getPaymentID($checkout_id);
+        $amount= $this->getAmount($checkout_id);
+        $secretApiKey = config('api_keys.PAYMONGO_SECRET_KEY');
+        $payload = [
+            'data' => [
+                'attributes' => [
+                    'payment_id'=> $payment_id,
+                    'amount' => $amount,
+                    "currency"=> "PHP",
+                    'reason' => 'requested_by_customer',
+                ],
+            ],
+        ];
+
+        $username = config('api_keys.PAYMONGO_SECRET_KEY');; // Replace with your Paymongo API key
+        $password = ''; // For basic auth, the password is empty
+        $client = new Client();
+
+        try {
+            $response = $client->post('https://api.paymongo.com/refunds/', [
+                'auth' => [$username, $password],
+                'headers' => [
+                    'accept' => 'application/json',
+                    'authorization' => 'Basic ' . base64_encode($secretApiKey . ":"),
+                    'content-Type' => 'application/json',
+                ],
+                'json' => $payload,
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                $status = "Cancelled";
+                $order = order::findOrFail($id);
+                $order->orderStatus = $status;
+                $order->save();
+                return redirect()->route('orders')->with('success', 'Cancelled Successfully');
+            } else {
+                $errorMessage = $response->getBody()->getContents(); // Get the error message from the response
+                return redirect()->route('orders')->with('errors', 'Error response from Paymongo: ' . $errorMessage);
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('orders')->with('errors', 'Exception occurred: ' . $e->getMessage());
+        }
+
+        
     }
     public function editProduct(Request $request, $id){
 

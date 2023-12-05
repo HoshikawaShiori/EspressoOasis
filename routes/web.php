@@ -70,6 +70,7 @@ Route::group(['prefix'=> 'a'], function () {
             Route::get('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
             Route::post('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
             Route::get('/orderUpdate/{id}/{status}', [dashboardController::class, 'updateStatus'])->name('order.update');
+            Route::get('/orderCancel/{id}/{checkout_id}', [dashboardController::class, 'cancelOrder'])->name('order.cancel');
             Route::get('/destroyCoffee{id}', [dashboardController::class, 'Coffeedestroy'])->name('coffee.destroy');
             Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
         });
@@ -83,6 +84,7 @@ Route::group(['prefix'=> 'a'], function () {
             Route::get('/destroyCoffee{id}', [dashboardController::class, 'Coffeedestroy'])->name('coffee.destroy');
             Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
             Route::get('/orderUpdate/{id}/{status}', [dashboardController::class, 'updateStatus'])->name('order.update');
+            Route::get('/orderCancel/{id}/{checkout_id}', [dashboardController::class, 'cancelOrder'])->name('order.cancel');
             Route::get('/accounts', [dashboardController::class,'getAccounts'])->name('accounts');
             Route::get('/destroyAcctount{id}', [dashboardController::class, 'accountDestroy'])->name('user.destroy');
             Route::post('/addAccount{role}', [UserController::class, 'postAdmin'])->name('account.create');
