@@ -3,7 +3,7 @@
     Products
 @endsection
 @section('content')
-@include('partials.admintopNav')
+    @include('partials.admintopNav')
     @if (count($errors) > 0)
         <div class="alert alert-danger">
             <ul>
@@ -137,7 +137,7 @@
                                                             id="Edittitle-{{ $coffee->id }}" name="Edittitle"
                                                             value="{{ $coffee->title }}" required>
                                                     </div>
-                                                    <div id="jsonFields-{{ $coffee->id }}" class="col-md-6">
+                                                    <div id="jsonFields-{{ $coffee->id }}" class="col-md-8">
                                                         @foreach ($coffee->sizes as $index => $size)
                                                             <div class="row jsonField">
                                                                 <div class="col">
@@ -154,6 +154,13 @@
                                                                         name="Editprice[]" id="Editprice[]"
                                                                         value="{{ $size['price'] }}" required>
                                                                 </div>
+
+                                                                <div class="col">
+                                                                    <div>&nbsp;</div>
+                                                                    <input type="button"
+                                                                        class="btn bg-danger text-white btn-sm removeButton"
+                                                                        value="Remove Size">
+                                                                </div>
                                                             </div>
                                                         @endforeach
                                                     </div>
@@ -161,13 +168,13 @@
                                                         id="addJsonField{{ $coffee->id }}">Add
                                                         Field</button>
 
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close</button>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
 
-                                                            <input type="submit" form="editForm-{{ $coffee->id }}"
-                                                                class="btn btn-primary" value="Submit">
-                                                        </div>
+                                                        <input type="submit" form="editForm-{{ $coffee->id }}"
+                                                            class="btn btn-primary" value="Submit">
+                                                    </div>
                                                 </form>
                                             </div>
                                         </div>
@@ -179,7 +186,7 @@
                                     var frame = document.getElementById('frame-{{ $coffee->id }}');
                                     frame.src = URL.createObjectURL(event.target.files[0]);
                                 }
-                    
+
                                 function clearImage{{ $coffee->id }}() {
                                     document.getElementById('imagePath-{{ $coffee->id }}').value = null;
                                     document.getElementById('frame-{{ $coffee->id }}').src = "";
@@ -204,16 +211,35 @@
                                                                                             name="Editprice[]"
                                                                                             id="Editprice[]"
                                                                                             value="20" required>
-                                                                                    </div>`;
+                                                                                    </div>
+                                                                                    <div class="col">
+                                                                                    <div>&nbsp;</div>
+                                                                                    <input type="button" class="btn bg-danger text-white btn-sm removeButton" value="Remove Size">
+                                                                                </div>`;
                                     jsonFields.appendChild(newField);
+
+                                    var removeButtons = document.getElementsByClassName('removeButton');
+                                    console.log("remove");
+                                    for (var i = 0; i < removeButtons.length; i++) {
+                                        removeButtons[i].addEventListener('click', function() {
+                                            this.closest('.jsonField').remove();
+                                        });
+                                    }
                                 });
+                                var removeButtons = document.getElementsByClassName('removeButton');
+                                console.log("remove");
+                                for (var i = 0; i < removeButtons.length; i++) {
+                                    removeButtons[i].addEventListener('click', function() {
+                                        this.closest('.jsonField').remove();
+                                    });
+                                }
                             </script>
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
-    
+
         {{-- add modal --}}
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -240,7 +266,7 @@
                                     <input type="text" class="form-control" placeholder="Name" id="title"
                                         name="title" required>
                                 </div>
-                                <div id="jsonFields" class="col-md-6">
+                                <div id="jsonFields" class="col-md-9">
                                     <div class="row jsonField">
                                         <div class="col">
                                             <label for="size[]">Size:</label>
@@ -267,7 +293,7 @@
             </div>
         </div>
     </main>
-    
+
 @endsection
 @section('scripts')
     <script>
@@ -294,8 +320,20 @@
                 <label for="price[]">Price</label>
                 <input type="number" class="form-control" placeholder="Price" min="20" name="price[]" required>
             </div>
+            <div class="col">
+            <div>&nbsp;</div>
+            <input type="button" class="btn bg-danger text-white btn-sm removeButton" value="Remove Size">
+            </div>
         `;
             jsonFields.appendChild(newField);
+
+            var removeButtons = document.getElementsByClassName('removeButton');
+            console.log("remove");
+            for (var i = 0; i < removeButtons.length; i++) {
+                removeButtons[i].addEventListener('click', function() {
+                    this.closest('.jsonField').remove();
+                });
+            }
         });
     </script>
 @endsection
