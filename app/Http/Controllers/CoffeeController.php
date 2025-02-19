@@ -195,10 +195,10 @@ class CoffeeController extends Controller
 
         if ($response->getStatusCode() === 200) {
             $responseData = json_decode($response->getBody(), true);
-
+            
             if (isset($responseData['data']['attributes']['checkout_url'])) {
                 $checkoutUrl = $responseData['data']['attributes']['checkout_url'];
-                Session::put('checkout_id',  $responseData['data']['id']);                
+                Session::put('checkout_id',  $responseData['data']['id']);             
                 // Redirect the user to Paymongo checkout URL
                 return redirect($checkoutUrl);
             } else {

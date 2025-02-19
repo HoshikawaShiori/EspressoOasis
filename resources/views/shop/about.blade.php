@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="{{ URL::to('src/css/shop-card.css') }}">
 @endsection
 @section('title')
-    About us
+    About
 @endsection
 
 @section('content')

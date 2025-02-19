@@ -16,6 +16,8 @@ class role_seeder extends Seeder
         $roles = [
             ['name' => 'admin'],
             ['name' => 'user'],
+            ['name' => 'superadmin'],
+            ['name' => 'attendant'],
         ];
 
         DB::table('roles')->insert($roles);

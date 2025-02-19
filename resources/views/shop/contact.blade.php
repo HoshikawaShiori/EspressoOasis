@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="{{ URL::to('src/css/shop-card.css') }}">
 @endsection
 @section('title')
-    About us
+    Contact
 @endsection
 
 @section('content')
@@ -13,7 +13,7 @@
                     <div class="col-md-6 text-center mb-5">
                         <div class="header">
                             <h1 class="display-2 text-light">
-                                About Us
+                                Contact
                             </h1>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Shop
+    Profile|Orders
 @endsection
 
 @section('content')
@@ -17,8 +17,6 @@
                                 @endif
                             </span>!</h5>
 
-
-                            orderStatus
                     </div>
                     <div class="card`body p-4">
                         @foreach ($orders as $order)

@@ -10,6 +10,10 @@
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
+            @elseif (session('errors'))
+                <div class="alert alert-danger">
+                    {{ session('errors') }}
+                </div>
         @endif
             <div class="card`body p-4">
                 @foreach ($orders as $order)
@@ -29,19 +33,21 @@
                                 <div class="col-md-auto">
                                 </div>
                                 <div class="col col-lg-2 text-align-right">
+                                    @if($order['orderStatus'] != 'Cancelled')
+                                    <button class="btn btn-danger mb-2"  data-bs-toggle="modal" data-bs-target="#modal{{ $order['id'] }}" >Cancel Order</button>
+                                    @endif
                                     <div class="col col-lg-2 text-align-right">
                                         @if($order['orderStatus'] == 'Order Complete')
                                             <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">{{ $order['orderStatus'] }} </button>
                                         @elseif($order['orderStatus'] == 'Processing' || $order['orderStatus'] == 'Serving')
                                             <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">{{ $order['orderStatus'] }}</button>
                                         @else
-                                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">{{ $order['orderStatus'] }}</button>
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="dropdown" aria-expanded="false" disabled>{{ $order['orderStatus'] }}</button>
                                         @endif
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item" href="{{ route('order.update', ['id' => $order->id, 'status' => 'Order Complete']) }}">Order Complete</a></li>
                                             <li><a class="dropdown-item" href="{{ route('order.update', ['id' => $order->id, 'status' => 'Processing']) }}">Processing</a></li>
-                                            <li><a class="dropdown-item" href="{{ route('order.update', ['id' => $order->id, 'status' => 'Serving']) }}">Serving</a></li>
-                                            <li><a class="dropdown-item" href="{{ route('order.update', ['id' => $order->id, 'status' => 'Cancelled']) }}">Cancelled</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('order.update', ['id' => $order->id, 'status' => 'Serving']) }}" >Serving</a></li>
                                           </ul>
                                     </div>
                                 </div>
@@ -86,6 +92,25 @@
                                     </div>
                                 </div>
                                 <hr class="mb-4" opacity: 1;>
+
+                                <div class="modal fade" id="modal{{ $order['id'] }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title">Cancel Order</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                          <p>Are you sure you want to cancel order. With order no. {{ $order['id'] }}?</p>
+                                          <p class="text-danger">This order will be fully refunded</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                          <a type="button" class="btn btn-danger" href="{{ route('order.cancel', ['id' => $order->id,'checkout_id'=> $order->checkout_id]) }}">Cancel Order</a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                             @endforeach
 
 
