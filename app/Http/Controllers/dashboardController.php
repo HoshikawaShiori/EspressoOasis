@@ -53,7 +53,7 @@ class dashboardController extends Controller
     public function accountDestroy($id){
         $users = User::find($id);
         $users->delete();
-        return redirect()->route('users')->with('success', 'Removed Successfully');
+        return redirect()->route('accounts')->with('success', 'Removed Successfully');
     }
     public function getOrders(){
         $orders = Order::all();
