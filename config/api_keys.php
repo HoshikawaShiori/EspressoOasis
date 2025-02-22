@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'PAYMONGO_PUBLIC_KEY' => 'pk_test_5vG1sfcLtwuqcZbL9qAJHHFq',
-    'PAYMONGO_SECRET_KEY' => 'sk_test_xEpXHanDYhXfVwY5XyXNUtBY',
+    'PAYMONGO_PUBLIC_KEY' => env('PAYMONGO_PUBLIC_KEY'),
+    'PAYMONGO_SECRET_KEY' => env('PAYMONGO_SECRET_KEY'),
 
-    'GOOGLE_CLIENT_ID' => '953398952669-r0tlimpoprv18pfgis5u39dk4r0t83p5.apps.googleusercontent.com',
-    'GOOGLE_CLIENT_SECRET' => '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',
-    'GOOGLE_REDIRECT_URI' => 'http://localhost:8000/login/google/callback',
+    'GOOGLE_CLIENT_ID' => env('GOOGLE_CLIENT_ID'),
+    'GOOGLE_CLIENT_SECRET' => env('GOOGLE_CLIENT_SECRET'),
+    'GOOGLE_REDIRECT_URI' => env('GOOGLE_REDIRECT_URI'),
 ];

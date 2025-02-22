@@ -6,7 +6,7 @@
 @section('content')
     @if (Session::has('cart'))
         <div class="container">
-         
+
             <div class="row justify-content-center align-items-center vh-100">
                 <div class="col-md-8 mb-4">
                   <h3 >Customer Detail</h3>
@@ -40,7 +40,7 @@
 
                                 <!-- Email input (optional) -->
                                 <div class="form-outline mb-4">
-                                    <input type="email" id="form7Example5" class="form-control" name="email" />
+                                    <input type="email" id="form7Example5" class="form-control" name="email" required />
                                     <label class="form-label" for="form7Example5">Email</label>
                                 </div>
 
@@ -104,7 +104,7 @@
                 </div>
             </div>
         </div>
-        @include('partials.footer')  
+        @include('partials.footer')
     @else
         <div class="row">
             <div class="col-sm-6 offset-sm-3 text-center">
