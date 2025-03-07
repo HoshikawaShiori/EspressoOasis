@@ -25,7 +25,7 @@ use App\Http\Controllers\UserController;
     Route::get('/contact', [CoffeeController::class, 'getContact'])->name('contact');
     Route::post('/sendmail', [ContactFormController::class, 'submitForm'])->name('contact.submit');
 
-    
+
 
 Route::group(['prefix'=> 'user'], function () {
     Route::group(['middleware'=> 'guest'], function () {
@@ -55,14 +55,14 @@ Route::group(['prefix'=> 'user'], function () {
 
 Route::group(['prefix'=> 'a'], function () {
     Route::group(['middleware'=> 'guest'], function () {
-        
+
         Route::get('/login', [adminController::class,'getSignin'])->name('signin');
         Route::post('/login', [adminController::class,'postSignin'])->name('signin');
         });
-        
+
     Route::group(['middleware' => ['auth', 'role']], function () {
         Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
-        
+
         Route::group(['middleware' => ['role:admin']], function () {
             Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
             Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
@@ -75,7 +75,7 @@ Route::group(['prefix'=> 'a'], function () {
             Route::post('/editProduct{id}', [dashboardController::class, 'editProduct'])->name('editProduct');
         });
         Route::group(['middleware' => ['role:superadmin']], function () {
-        
+
             Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
             Route::get('/products', [CoffeeController::class, 'getProducts'])->name('products');
             Route::get('/addProduct', [dashboardController::class, 'postProduct'])->name('saveProduct');
@@ -91,9 +91,9 @@ Route::group(['prefix'=> 'a'], function () {
             Route::post('/editAccount/{id}', [UserController::class, 'editAdmin'])->name('account.edit');
         });
 
-        
+
         Route::group(['middleware' => ['auth', 'role:attendant']], function () {
-        
+
         Route::get('/dashboard', [dashboardController::class,'getDashboard'])->name('dashboard');
         Route::get('/orders', [dashboardController::class, 'getOrders'])->name('orders');
         Route::get('/orderUpdate/{id}/{status}', [dashboardController::class, 'updateStatus'])->name('order.update');
@@ -101,4 +101,14 @@ Route::group(['prefix'=> 'a'], function () {
     });
 
 });
+
+// 2FA Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/2fa/enable', [App\Http\Controllers\TwoFactorAuthController::class, 'enable2fa'])->name('2fa.enable');
+    Route::post('/2fa/confirm', [App\Http\Controllers\TwoFactorAuthController::class, 'confirm2fa'])->name('2fa.confirm');
+    Route::post('/2fa/disable', [App\Http\Controllers\TwoFactorAuthController::class, 'disable2fa'])->name('2fa.disable');
+});
+
+// 2FA Verification Route (no auth middleware)
+Route::post('/2fa/verify', [UserController::class, 'verify2FA'])->name('2fa.verify');
 
