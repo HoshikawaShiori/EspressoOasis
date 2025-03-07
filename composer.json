@@ -11,7 +11,8 @@
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.10",
         "laravel/tinker": "^2.8",
-        "paymongo/paymongo-php": "^0.0.0"
+        "paymongo/paymongo-php": "^0.0.0",
+        "pragmarx/google2fa-laravel": "^2.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

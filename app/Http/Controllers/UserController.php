@@ -6,13 +6,18 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Route;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('2fa')->except(['getSignup', 'postSignup', 'getSignin', 'postSignin', 'redirectToGoogle', 'handleGoogleCallback']);
+    }
+
    public function getSignup(){
     return view('user.signup');
    }
@@ -52,7 +57,7 @@ class UserController extends Controller
    }
 
    public function editAdmin(Request $request, $id){
-       
+
     $this->validate($request, [
         'editemail' => [
             'email',
@@ -68,7 +73,7 @@ class UserController extends Controller
         'editusername.min' => 'The username must be at least :min characters.',
         'editpassword.min' => 'The password must be at least :min characters.'
     ]);
-    
+
         $selectedRoleId = $request->input('editrole');
         $role = Role::findOrFail($selectedRoleId);
 
@@ -80,9 +85,9 @@ class UserController extends Controller
             $user->password = bcrypt($request->input('editpassword'));
         }
         $user->roles()->sync([$role->id]);
-        $user->save();  
+        $user->save();
         return redirect()->route('accounts')->with('success','Account Editted');
-  
+
    }
 
 
@@ -95,28 +100,46 @@ class UserController extends Controller
            'email' => 'email|required',
            'password' => 'required|min:4'
        ]);
-   
+
        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
            $user = Auth::user();
-   
-           if ($user->hasUserRole()) {
-               return redirect()->route('coffee.index')->with('success', 'Logged in successfully!');
+
+           // Check if user has role_id 2 (user role)
+           if ($user->roles()->where('role_id', 2)->exists()) {
+               if ($user->two_factor_enabled) {
+                   // Store user ID in session for 2FA
+                   session(['2fa_user_id' => $user->id]);
+                   // Set flag to show 2FA modal
+                   session(['show_2fa_modal' => true]);
+                   // Store intended URL
+                   session(['url.intended' => route('coffee.shop')]);
+                   Auth::logout();
+
+                   // Return JSON response for AJAX request
+                   if ($request->ajax()) {
+                       return response()->json(['requires_2fa' => true]);
+                   }
+
+                   // Return to login page with 2FA modal flag
+                   return redirect()->back();
+               }
+               return redirect()->route('coffee.shop')->with('success', 'Logged in successfully!');
            } else {
                Auth::logout();
                return redirect()->back()->with('error', 'Invalid Account');
            }
        }
-   
+
        return redirect()->back()->with('error', 'Invalid credentials');
    }
-   
+
 
    public function redirectToGoogle()
    {
        return Socialite::driver('google')->redirect();
    }
 
-   
+
 public function handleGoogleCallback()
 {
     try {
@@ -126,19 +149,24 @@ public function handleGoogleCallback()
         $existingUser = User::where('email', $user->getEmail())->first();
 
         if ($existingUser) {
-            if ($existingUser->hasUserRole()) {
+            if ($existingUser->roles()->where('role_id', 2)->exists()) {
+                if ($existingUser->two_factor_enabled) {
+                    session(['2fa_user_id' => $existingUser->id]);
+                    session(['show_2fa_modal' => true]);
+                    return redirect()->route('user.signin');
+                }
                 Auth::login($existingUser);
             } else {
                 Auth::logout();
                 return redirect()->back()->with('error', 'Invalid Account');
             }
-            
+
         } else {
             // Create a new user record in the database
             $newUser = User::create([
                 'email' => $user->getEmail(),
-                'username' => $this->generateUniqueUsername($user->getName()), // Generate a unique username
-                'password' => bcrypt(Str::random(12)), // Generate a random password
+                'username' => $this->generateUniqueUsername($user->getName()),
+                'password' => bcrypt(Str::random(12)),
             ]);
             $newUser->assignRole('user');
             Auth::login($newUser);
@@ -170,5 +198,54 @@ protected function generateUniqueUsername($name)
     public function getLogout(){
         Auth::logout();
         return redirect()->back()->with('success','');
+    }
+
+    public function verify2FA(Request $request)
+    {
+        $this->validate($request, [
+            'code' => 'required|string',
+        ]);
+
+        if (!session()->has('2fa_user_id')) {
+            if ($request->ajax()) {
+                return response()->json(['error' => 'Invalid session'], 422);
+            }
+            return redirect()->route('user.signin')->with('error', 'Invalid session');
+        }
+
+        $user = User::find(session('2fa_user_id'));
+
+        if (!$user) {
+            if ($request->ajax()) {
+                return response()->json(['error' => 'User not found'], 422);
+            }
+            return redirect()->route('user.signin')->with('error', 'User not found');
+        }
+
+        if ($user->validateTwoFactorCode($request->code)) {
+            Auth::login($user);
+            session()->forget(['2fa_user_id', 'show_2fa_modal']);
+            session(['2fa_verified' => true]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'redirect' => route('coffee.shop')
+                ]);
+            }
+
+            return redirect()->intended(route('coffee.shop'))
+                ->with('success', 'Logged in successfully!');
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'error' => 'Invalid authentication code'
+            ], 422);
+        }
+
+        return redirect()->back()
+            ->with('error', 'Invalid authentication code')
+            ->with('show_2fa_modal', true);
     }
 }

@@ -63,7 +63,7 @@
                                                 <p class="text-muted mb-0 small">
                                                     {{ json_decode($item['item'], true)['sizes'][$item['size']]['label'] }}
                                                 </p>
-        
+
                                             </div>
                                             <div
                                                 class="col-md-3 text-center d-flex justify-content-center align-items-center">
@@ -86,8 +86,8 @@
                                         </div>
                                         <hr class="mb-4" opacity: 1;>
                                     @endforeach
-        
-        
+
+
                                     <div class="row d-flex align-items-center border-top">
                                         <div class="col">
                                             <p class="text-muted mt-1 mb-0 small ms-xl-5">Checkout ID:
@@ -109,9 +109,32 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         @endforeach
-        
+
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">Two-Factor Authentication</div>
+                    <div class="card-body">
+                        @if(Auth::user()->two_factor_enabled)
+                            <div class="alert alert-success">
+                                Two-factor authentication is currently enabled.
+                            </div>
+                            <form method="POST" action="{{ route('2fa.disable') }}">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="code">Enter your 2FA code to disable:</label>
+                                    <input type="text" name="code" id="code" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-danger mt-3">Disable 2FA</button>
+                            </form>
+                        @else
+                            <div class="alert alert-warning">
+                                Two-factor authentication is not enabled. Enable it to add an extra layer of security to your account.
+                            </div>
+                            <a href="{{ route('2fa.enable') }}" class="btn btn-primary">Enable 2FA</a>
+                        @endif
                     </div>
                 </div>
             </div>
