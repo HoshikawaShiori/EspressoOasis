@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Session;
@@ -14,46 +15,57 @@ use Auth;
 class CoffeeController extends Controller
 {
     //retrieve all products for admin side
-    public function getProducts(){
+    public function getProducts()
+    {
         $coffees = Coffee::all();
-        return view('admin.products', ['coffees'=> $coffees]);
+        return view('admin.products', ['coffees' => $coffees]);
 
     }
-    public function getIndex(){
+    public function getCoffees()
+    {
         $coffees = Coffee::all();
-        return view('landing.index', ['coffees'=> $coffees]);
+        return response()->json($coffees);
+    }
+    public function getIndex()
+    {
+        $coffees = Coffee::all();
+        return view('landing.index', ['coffees' => $coffees]);
 
     }
-    
-    public function getShop(){
+
+    public function getShop()
+    {
 
         $coffees = Coffee::all();
-        return view('shop.index', ['coffees'=> $coffees]);
+        return view('shop.index', ['coffees' => $coffees]);
     }
-    public function getAbout(){
+    public function getAbout()
+    {
         return view('shop.about');
     }
-    public function getContact(){
+    public function getContact()
+    {
         return view('shop.contact');
     }
 
-    public function getAddToCart(Request $request, $id, $sizeIndex, $brew) {
+    public function getAddToCart(Request $request, $id, $sizeIndex, $brew)
+    {
 
         $coffee = Coffee::find($id);
         $oldCart = Session::has('cart') ? Session::get('cart') : null;
         $cart = new Cart($oldCart);
 
-    
+
         if ($coffee) {
             $sizes = $coffee->sizes;
-    
+
             if ($sizes && array_key_exists($sizeIndex, $sizes)) {
                 $selectedSize = $sizes[$sizeIndex];
                 $cart->add($coffee, $coffee->id, $sizeIndex, $brew);
-                
+
                 $request->session()->put('cart', $cart);
-                
-                
+
+
             } else {
                 return "Size not found at index $sizeIndex";
             }
@@ -62,78 +74,81 @@ class CoffeeController extends Controller
         }
         return redirect()->route('coffee.shop');
     }
-    
 
-    public function getReduce(Request $request, $combinedKey){
+
+    public function getReduce(Request $request, $combinedKey)
+    {
         $oldCart = $request->session()->has('cart') ? $request->session()->get('cart') : null;
         $cart = new Cart($oldCart);
-        
+
         $cart->reduce($combinedKey);
-        
+
         $request->session()->put('cart', $cart);
-        
-        if (count ($cart->items)>0) {
-            Session::put('cart',$cart);
-        }
-        else {
+
+        if (count($cart->items) > 0) {
+            Session::put('cart', $cart);
+        } else {
             Session::forget('cart');
         }
         return redirect()->route('coffee.cart');
 
     }
 
-    public function getIncrease(Request $request, $combinedKey){
+    public function getIncrease(Request $request, $combinedKey)
+    {
         $oldCart = $request->session()->has('cart') ? $request->session()->get('cart') : null;
         $cart = new Cart($oldCart);
-        
+
         $cart->increase($combinedKey);
-        
+
         $request->session()->put('cart', $cart);
-        
+
         // Redirect back to wherever you need
         return redirect()->route('coffee.cart');
     }
-    public function getRemove($combinedKey){
+    public function getRemove($combinedKey)
+    {
         $oldCart = Session::has('cart') ? Session::get('cart') : null;
-        $cart= new Cart($oldCart);
+        $cart = new Cart($oldCart);
         $cart->remove($combinedKey);
-        
-        if (count ($cart->items)>0) {
-            Session::put('cart',$cart);
-        }
-        else {
+
+        if (count($cart->items) > 0) {
+            Session::put('cart', $cart);
+        } else {
             Session::forget('cart');
         }
         return redirect()->route('coffee.cart');
     }
-    public function getCart(){
-       
-    
-        if (!Session:: has('cart')){
-           
-           
+    public function getCart()
+    {
+
+
+        if (!Session::has('cart')) {
+
+
             return view('shop.cart');
         }
         $oldCart = Session::get('cart');
-        $cart= new Cart($oldCart);
+        $cart = new Cart($oldCart);
         Auth::user()->cart = $cart;
-       
+
         // Session::forget('cart');
-        return view('shop.cart', ['coffees' => $cart->items, 'totalPrice'=> $cart->totalPrice]);
+        return view('shop.cart', ['coffees' => $cart->items, 'totalPrice' => $cart->totalPrice]);
     }
 
-    public function getcheckOutForm(){
+    public function getcheckOutForm()
+    {
 
-        if (!Session:: has('cart')){
-           
-           
+        if (!Session::has('cart')) {
+
+
             return view('shop.cart');
         }
         $oldCart = Session::get('cart');
-        $cart= new Cart($oldCart);
+        $cart = new Cart($oldCart);
 
         // Session::forget('cart');
-        return view('shop.checkout', ['coffees' => $cart->items, 'totalPrice'=> $cart->totalPrice]);
+        return view('shop.checkout', ['coffees' => $cart->items, 'totalPrice' => $cart->totalPrice]);
     }
 
 
@@ -148,8 +163,8 @@ class CoffeeController extends Controller
             'phone' => $request->input('phone'),
             'moreInfo' => $request->input('moreInfo')
         ];
-    
-        Session::put('shippingData',$shippingData);
+
+        Session::put('shippingData', $shippingData);
         // Construct the line items array based on your cart data' 
 
         $lineItems = [];
@@ -168,19 +183,20 @@ class CoffeeController extends Controller
         $payload = [
             'data' => [
                 'attributes' => [
-                  
-                    'payment_method_types' => ['card','gcash','paymaya'], // Payment method allowed (e.g., 'card')
+
+                    'payment_method_types' => ['card', 'gcash', 'paymaya'], // Payment method allowed (e.g., 'card')
                     'cancel_url' => route('coffee.shop'), // Replace with your cancel URL
                     'success_url' => route('payment.success'),
                     'return_url' => route('coffee.shop'), // Replace with your return URL
                     'billing_address_collection' => 'required',
-                    'send_email_receipt'=>true, 
+                    'send_email_receipt' => true,
                     'line_items' => $lineItems,
                     // Add other necessary attributes as required by Paymongo API
                 ],
             ],
         ];
-        $username = config('api_keys.PAYMONGO_SECRET_KEY');; // Replace with your Paymongo API key
+        $username = config('api_keys.PAYMONGO_SECRET_KEY');
+        ; // Replace with your Paymongo API key
         $password = ''; // For basic auth, the password is empty
 
         // Make the request to create a checkout session in Paymongo
@@ -195,10 +211,10 @@ class CoffeeController extends Controller
 
         if ($response->getStatusCode() === 200) {
             $responseData = json_decode($response->getBody(), true);
-            
+
             if (isset($responseData['data']['attributes']['checkout_url'])) {
                 $checkoutUrl = $responseData['data']['attributes']['checkout_url'];
-                Session::put('checkout_id',  $responseData['data']['id']);             
+                Session::put('checkout_id', $responseData['data']['id']);
                 // Redirect the user to Paymongo checkout URL
                 return redirect($checkoutUrl);
             } else {
@@ -214,22 +230,22 @@ class CoffeeController extends Controller
 
     public function successPayment(Request $request)
     {
-        if (!Session:: has('cart')){           
+        if (!Session::has('cart')) {
             return view('shop.cart');
         }
-        
+
 
         $oldCart = Session::get('cart');
-        $shippingData=Session::get('shippingData');
-        $checkout_id=Session::get('checkout_id');
-        $defaultOrderStatus= "Processing";
-        $cart= new Cart($oldCart);
+        $shippingData = Session::get('shippingData');
+        $checkout_id = Session::get('checkout_id');
+        $defaultOrderStatus = "Processing";
+        $cart = new Cart($oldCart);
 
-    
 
-        $order= new Order();
+
+        $order = new Order();
         $order->fill($shippingData);
-        $order->cart= serialize($cart);
+        $order->cart = serialize($cart);
         $order->checkout_id = $checkout_id;
         $order->orderStatus = $defaultOrderStatus;
 
@@ -243,8 +259,9 @@ class CoffeeController extends Controller
         return redirect()->route('coffee.shop');
     }
 
-    public function expireCheckout($checkoutSessionId){
-    
+    public function expireCheckout($checkoutSessionId)
+    {
+
         $secretApiKey = config('api_keys.PAYMONGO_SECRET_KEY');
 
         $client = new Client([
@@ -266,6 +283,6 @@ class CoffeeController extends Controller
             }
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             echo "Error: " . $e->getMessage();
-        }   
+        }
     }
 }
